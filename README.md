@@ -31,6 +31,20 @@ Any compatible coordinator or third-party UI can interact with it via the standa
 Additionally, the node agent connects to a coordinator via HTTP POST requests to register itself and send heartbeats.
 See the `examples/` directory for a standalone mock coordinator script demonstrating how to receive these requests.
 
+## Verifying the Product Outcome (Distributed Inference)
+Because RAMDeck uses standard protocols, you can easily verify that the node accepts and processes offloaded tensors without needing our proprietary UI.
+
+1. **Start the node agent** on a worker machine (this automatically spins up `ggml-rpc-server` on port 50052):
+   ```bash
+   python -m daemon.ramdeck.node_agent
+   ```
+2. **Run inference** from a host machine using standard open-source tools:
+   ```bash
+   llama-cli -m model.gguf --rpc <worker_ip>:50052 -p "Hello!"
+   ```
+
+**Fast Sanity Check:** We have included `examples/test_rpc_inference.sh`. This script downloads a tiny test model (TinyStories-15M, ~9MB) and immediately runs it against your local node's RPC port. The output will likely be gibberish due to the tiny model size, but it guarantees that the RPC connection is actively processing your tensor offloads.
+
 
 ## License FAQ
 
