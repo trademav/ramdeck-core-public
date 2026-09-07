@@ -6,6 +6,15 @@ This repository contains the core node-agent and distributed orchestration plumb
 
 We are making this source-available so you can read exactly what it does before you run it on your network or give it access to your hardware. 
 
+## Our Story
+RAMDeck exists because we ran out of RAM and couldn't afford more of it.
+
+We run TradeMAV, a small trading tools product with a growing base of backers who needed technical support. To keep up without a support team or a big budget, we built a local, RAG-based assistant — we call it Jarvis — trained on our own knowledge base, running on a single Mac Mini. Jarvis handled the routine questions so a human could focus on the ones that actually needed a person.
+
+As our knowledge base and our models grew, one Mac Mini stopped being enough. And this happened right as the industry hit what's now being called the "RAMpocalypse" — a real, ongoing global memory shortage. AI datacenter demand for HBM memory has been crowding out consumer DRAM production since 2025, and the price swings have been brutal: a 64GB DDR5 kit that cost around $191 in August 2025 was going for $1,118 a year later, and industry analysts don't expect real relief until 2027 or later. Buying our way out of the problem with more RAM simply wasn't an option.
+
+So we did the only thing that made sense: we pointed every device we already owned — old PCs, a gaming rig, a Mac, whatever had spare RAM or VRAM — at the same problem, and taught them to work together as one pool of memory instead of buying a bigger single machine. That pooled-hardware approach is RAMDeck. We still run models like Qwen across our own cluster today to work on our code, and this repository is the actual engine behind that, not a simplified demo version.
+
 ## Known Limitations
 - This is a pre-1.0 engine (v0.9). It is a working-but-imperfect release.
 - There is no built-in graphical user interface (GUI) or dashboard included in this repository.
