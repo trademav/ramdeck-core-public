@@ -1190,8 +1190,14 @@ class RpcWorkerHealthMonitor:
         failure_threshold: int = DEFAULT_RPC_HEALTH_FAILURE_THRESHOLD,
         probe: Callable[[int], tuple[bool, str | None]] = probe_local_rpc,
         timeout_failure_threshold: int | None = None,
+        tcp_probe_enabled: bool | None = None,
     ):
         self.failure_threshold = max(1, int(failure_threshold))
+        if tcp_probe_enabled is None:
+            tcp_probe_enabled = os.environ.get("RAMDECK_RPC_HEALTH_TCP_PROBE", "0").strip().lower() not in {
+                "0", "false", "no", "off", "",
+            }
+        self.tcp_probe_enabled = bool(tcp_probe_enabled)
         if timeout_failure_threshold is None:
             multiplier = float(
                 os.environ.get(
@@ -1244,13 +1250,35 @@ class RpcWorkerHealthMonitor:
             self._log_failure(result)
             return result
 
-        # Skip TCP probe for ggml-rpc-server because rapid TCP connects/disconnects 
-        # cause the acceptor thread in some llama.cpp versions to deadlock.
-        # Since the process poll() is successful, we assume it's healthy.
-        self.consecutive_failures = 0
-        self.consecutive_timeouts = 0
-        return {
-            "healthy": True,
+        # TCP-probing ggml-rpc-server is opt-in (RAMDECK_RPC_HEALTH_TCP_PROBE=1):
+        # rapid TCP connects/disconnects are known to deadlock the acceptor thread
+        # in some llama.cpp versions. Default stays process.poll()-only, which
+        # cannot detect a worker that is alive but wedged (not accepting
+        # connections) -- operators who have verified their build is unaffected
+        # can opt into the full TCP-probe/threshold logic below.
+        if not self.tcp_probe_enabled:
+            self.consecutive_failures = 0
+            self.consecutive_timeouts = 0
+            return {
+                "healthy": True,
+                "restart_required": False,
+                "reason": "healthy",
+                "worker_pid": worker_pid,
+                "port": int(port),
+                "poll": None,
+                "tcp_error": None,
+                "consecutive_failures": 0,
+                "consecutive_timeouts": 0,
+                "failure_threshold": self.failure_threshold,
+                "timeout_failure_threshold": self.timeout_failure_threshold,
+            }
+
+        connected, tcp_error = self.probe(port)
+        if connected:
+            self.consecutive_failures = 0
+            self.consecutive_timeouts = 0
+            return {
+                "healthy": True,
                 "restart_required": False,
                 "reason": "healthy",
                 "worker_pid": worker_pid,
