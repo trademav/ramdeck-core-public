@@ -1,6 +1,6 @@
 """RAMDeck contributor agent.
 
-Runs on a contributing PC/Mac/Linux device, launches the local llama.cpp RPC
+Runs on a contributing Windows/Mac/Android device, launches the local llama.cpp RPC
 worker, registers capacity with a RAMDeck coordinator, and sends heartbeats.
 """
 from __future__ import annotations

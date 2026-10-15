@@ -2,7 +2,9 @@
 
 **Note: This project is source-available, not OSI-approved open source.** It is licensed under Apache 2.0 with a Commons Clause restriction to prevent commercial resale without a separate license. See the [LICENSE FAQ](#license-faq) below.
 
-This repository contains the core node-agent and distributed orchestration plumbing for RAMDeck. It is the exact engine that runs on a contributing device (Mac, PC, Linux) to shard LLM inference across heterogeneous hardware.
+This repository contains the core node-agent and distributed orchestration plumbing for RAMDeck. It is the exact engine that runs on a contributing device (Mac, Windows, Android) to shard LLM inference across heterogeneous hardware.
+
+> **Public reference snapshot.** This repository is a public reference snapshot of a larger codebase, not the full product. Product support goes through [ramdeck.com](https://ramdeck.com).
 
 We are making this source-available so you can read exactly what it does before you run it on your network or give it access to your hardware. 
 
@@ -18,6 +20,7 @@ So we did the only thing that made sense: we pointed every device we already own
 ## Known Limitations
 - This is a pre-1.0 engine (v0.9). It is a working-but-imperfect release.
 - There is no built-in graphical user interface (GUI) or dashboard included in this repository.
+- **Platform support:** The RAMDeck product's node agent runs on Mac, Windows and Android. This public repository is a reference snapshot and isn't packaged or tested as a standalone Windows install, so use the product installers from [ramdeck.com](https://ramdeck.com) for Windows. The split-diagnostic tooling (`split_lifecycle.py` and `split_controller.py`) relies on POSIX process APIs (`split_lifecycle.py` uses `os.killpg` and `os.getpgid`, and `split_controller.py` imports it) and cannot be imported on Windows. Linux is not currently supported for the node agent.
 
 ## Setup Instructions
 
