@@ -1,3 +1,5 @@
+> ### 🚀 [RAMDeck Hardware Hub is live on Indiegogo, pool your RAM, run bigger AI →](https://www.indiegogo.com/en/projects/trademav/ramdeck-pool-your-ram-run-bigger-ai)
+
 # RAMDeck Core Engine
 
 **Note: This project is source-available, not OSI-approved open source.** It is licensed under Apache 2.0 with a Commons Clause restriction to prevent commercial resale without a separate license. See the [LICENSE FAQ](#license-faq) below.
