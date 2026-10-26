@@ -1,68 +1,80 @@
-> ### 🚀 [RAMDeck Hardware Hub is live on Indiegogo, pool your RAM, run bigger AI →](https://www.indiegogo.com/en/projects/trademav/ramdeck-pool-your-ram-run-bigger-ai)
+> ### 🚀 [RAMDeck Hardware Hub is live on Indiegogo — pool your RAM, run bigger AI →](https://www.indiegogo.com/en/projects/trademav/ramdeck-pool-your-ram-run-bigger-ai)
 
 # RAMDeck Core Engine
 
-**Note: This project is source-available, not OSI-approved open source.** It is licensed under Apache 2.0 with a Commons Clause restriction to prevent commercial resale without a separate license. See the [LICENSE FAQ](#license-faq) below.
+**Source-Available Reference Snapshot**  
+Licensed under Apache 2.0 with the [Commons Clause](#terms--license-summary) condition. Product support, official installers, and turnkey hardware are available exclusively through [ramdeck.com](https://ramdeck.com) and our [Indiegogo campaign](https://www.indiegogo.com/en/projects/trademav/ramdeck-pool-your-ram-run-bigger-ai).
 
-This repository contains the core node-agent and distributed orchestration plumbing for RAMDeck. It is the exact engine that runs on a contributing device (Mac, Windows, Android) to shard LLM inference across heterogeneous hardware.
+---
 
-> **Public reference snapshot.** This repository is a public reference snapshot of a larger codebase, not the full product. Product support goes through [ramdeck.com](https://ramdeck.com).
+## About This Repository
 
-We are making this source-available so you can read exactly what it does before you run it on your network or give it access to your hardware. 
+This repository is a **public reference snapshot** of the contributor node-agent and RPC worker plumbing used in the RAMDeck commercial product.
+
+We publish this code so that backers, enterprise teams, and security researchers can inspect exactly what runs on their contributing devices (network sockets, process execution, and tensor offloading mechanisms) before deploying RAMDeck on their local network.
+
+> **Important:** This repository is **not** a standalone DIY cluster orchestration suite, nor is it an open-source alternative to the RAMDeck product. The turnkey distributed cluster experience—including zero-configuration coordinator discovery, automatic model layer placement, dynamic memory pooling, web dashboard, and managed installers—is proprietary and distributed as part of the RAMDeck commercial product and Hardware Hub.
+
+---
 
 ## Our Story
 RAMDeck exists because we ran out of RAM and couldn't afford more of it.
 
-We run TradeMAV, a small trading tools product with a growing base of backers who needed technical support. To keep up without a support team or a big budget, we built a local, RAG-based assistant — we call it Jarvis — trained on our own knowledge base, running on a single Mac Mini. Jarvis handled the routine questions so a human could focus on the ones that actually needed a person.
+We run TradeMAV, a small trading tools product with a growing base of backers who needed technical support. To keep up without a support team or a big budget, we built a local, RAG-based assistant — we call it Jarvis — trained on our own knowledge base, running on a single Mac Mini. Jarvis handled routine questions so a human could focus on the ones that actually needed a person.
 
-As our knowledge base and our models grew, one Mac Mini stopped being enough. And this happened right as the industry hit what's now being called the "RAMpocalypse" — a real, ongoing global memory shortage. AI datacenter demand for HBM memory has been crowding out consumer DRAM production since 2025, and the price swings have been brutal: a 64GB DDR5 kit that cost around $191 in August 2025 was going for $1,118 a year later, and industry analysts don't expect real relief until 2027 or later. Buying our way out of the problem with more RAM simply wasn't an option.
+As our knowledge base and models grew, one Mac Mini stopped being enough. And this happened right as the industry hit what's now called the "RAMpocalypse" — a global memory shortage driven by AI datacenter demand for HBM that crowded out consumer DRAM. Prices skyrocketed: a 64GB DDR5 kit that cost around $191 in August 2025 climbed to over $1,100 a year later. Buying our way out of the problem with more single-machine RAM simply wasn't viable.
 
-So we did the only thing that made sense: we pointed every device we already owned — old PCs, a gaming rig, a Mac, whatever had spare RAM or VRAM — at the same problem, and taught them to work together as one pool of memory instead of buying a bigger single machine. That pooled-hardware approach is RAMDeck. We still run models like Qwen across our own cluster today to work on our code, and this repository is the actual engine behind that, not a simplified demo version.
+So we built RAMDeck to pool the memory we already owned across multiple devices into a single virtual compute engine. This repository contains the reference implementation of the underlying node agent and RPC worker lifecycle that powers that compute sharing.
 
-## Known Limitations
-- This is a pre-1.0 engine (v0.9). It is a working-but-imperfect release.
-- There is no built-in graphical user interface (GUI) or dashboard included in this repository.
-- **Platform support:** The RAMDeck product's node agent runs on Mac, Windows and Android. This public repository is a reference snapshot and isn't packaged or tested as a standalone Windows install, so use the product installers from [ramdeck.com](https://ramdeck.com) for Windows. The split-diagnostic tooling (`split_lifecycle.py` and `split_controller.py`) relies on POSIX process APIs (`split_lifecycle.py` uses `os.killpg` and `os.getpgid`, and `split_controller.py` imports it) and cannot be imported on Windows. Linux is not currently supported for the node agent.
+---
 
-## Setup Instructions
+## Product vs. Reference Snapshot
 
-### 1. Create a Virtual Environment and Install Dependencies
+| Capability | RAMDeck Commercial Product & Hub | This Public Reference Snapshot |
+| :--- | :--- | :--- |
+| **Primary Purpose** | Turnkey consumer & team AI appliance | Code inspection, protocol verification, security audits |
+| **Distribution** | Managed installers & preconfigured Hub hardware | Source code snapshot (manual Python environment) |
+| **Node Support** | macOS, Windows, Android (tested & packaged) | Python source reference (POSIX primary; see limitations) |
+| **Cluster Orchestration** | Automatic layer sharding, memory discovery, UI | Minimal protocol hooks & mock interfaces |
+| **Product Support** | Included via [ramdeck.com](https://ramdeck.com) | Community issue reporting only |
+
+---
+
+## Known Limitations & Platform Support
+
+- **Reference Snapshot Status:** This codebase reflects a snapshot (v0.9) of the node-side daemon. It does not include the commercial coordinator, management interface, or packaging pipelines.
+- **Platform Support:** Official turnkey node installers for Mac, Windows, and Android are distributed exclusively through [ramdeck.com](https://ramdeck.com). This public repository is not packaged or supported as a standalone Windows installation. The diagnostic modules (`split_lifecycle.py` and `split_controller.py`) rely on POSIX process APIs (`os.killpg`, `os.getpgid`) and cannot be imported on Windows. Linux is not currently supported for the node agent.
+
+---
+
+## Local Verification & Security Audit
+
+For developers and security auditors who wish to verify the node agent's local runtime behavior, open ports, and standard `ggml-rpc-server` integration in an isolated environment:
+
+### 1. Setup Local Environment
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Run the Node Agent
+### 2. Inspect Node Agent Execution
 ```bash
 python -m daemon.ramdeck.node_agent
 ```
+By default, the node agent supervises a local `ggml-rpc-server` on ports `50052` (GPU) and `50053` (CPU), and exposes standard llama.cpp RPC endpoints.
 
-### 3. Interact via the API Contract
-The node agent runs a `ggml-rpc-server` on port 50052 (GPU) and 50053 (CPU).
-Any compatible coordinator or third-party UI can interact with it via the standard llama.cpp RPC protocol.
+### 3. Verification Test
+The repository includes a sanity verification script at `examples/test_rpc_inference.sh`. This script runs a minimal 9MB test model against the local node's RPC port to verify tensor offload connectivity.
 
-Additionally, the node agent connects to a coordinator via HTTP POST requests to register itself and send heartbeats.
-See the `examples/` directory for a standalone mock coordinator script demonstrating how to receive these requests.
+---
 
-## Verifying the Product Outcome (Distributed Inference)
-Because RAMDeck uses standard protocols, you can easily verify that the node accepts and processes offloaded tensors without needing our proprietary UI.
+## Terms & License Summary
 
-1. **Start the node agent** on a worker machine (this automatically spins up `ggml-rpc-server` on port 50052):
-   ```bash
-   python -m daemon.ramdeck.node_agent
-   ```
-2. **Run inference** from a host machine using standard open-source tools:
-   ```bash
-   llama-cli -m model.gguf --rpc <worker_ip>:50052 -p "Hello!"
-   ```
+This project is released under the **Apache License, Version 2.0** with the **Commons Clause** condition.
 
-**Fast Sanity Check:** We have included `examples/test_rpc_inference.sh`. This script downloads a tiny test model (TinyStories-15M, ~9MB) and immediately runs it against your local node's RPC port. The output will likely be gibberish due to the tiny model size, but it guarantees that the RPC connection is actively processing your tensor offloads.
+- **Permitted:** You may view, audit, study, test, and adapt this code for private evaluation, security reviews, and non-commercial research.
+- **Restricted (Commons Clause):** You may **not** sell, license, host as a paid service, or commercially distribute products or services derived from this software.
+- **Commercial Licensing:** If you require commercial licensing, enterprise integration, or turnkey hardware deployment, please visit [ramdeck.com](https://ramdeck.com) or back the [RAMDeck Hardware Hub campaign](https://www.indiegogo.com/en/projects/trademav/ramdeck-pool-your-ram-run-bigger-ai).
 
-
-## License FAQ
-
-**What does this license mean for you?**
-If you are a personal user, homelab enthusiast, or a researcher, you can run, modify, and distribute this code freely on your own hardware just like standard open-source software. However, if you intend to offer a product or service to third parties whose value substantially derives from this engine (i.e., commercial resale), you must contact us for a separate commercial license. 
-
-For full details, please see the `LICENSE` file.
+For complete legal terms, see the [LICENSE](LICENSE) file.
