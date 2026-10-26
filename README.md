@@ -33,8 +33,8 @@ So we built RAMDeck to pool the memory we already owned across multiple devices 
 | Capability | RAMDeck Commercial Product & Hub | This Public Reference Snapshot |
 | :--- | :--- | :--- |
 | **Primary Purpose** | Turnkey consumer & team AI appliance | Code inspection, protocol verification, security audits |
-| **Distribution** | Managed installers & preconfigured Hub hardware | Source code snapshot (manual Python environment) |
-| **Node Support** | macOS, Windows, Android (tested & packaged) | Python source reference (POSIX primary; see limitations) |
+| **Distribution** | Managed installers, mobile apps, & preconfigured Hub hardware | Source code snapshot (manual Python environment) |
+| **Node Support** | macOS, Windows, Linux, Android, & iOS ([App Store](https://apps.apple.com/us/app/ramdeck-distributed-ai/id6825166226)) | Python source reference (POSIX primary; see limitations) |
 | **Cluster Orchestration** | Automatic layer sharding, memory discovery, UI | Minimal protocol hooks & mock interfaces |
 | **Product Support** | Included via [ramdeck.com](https://ramdeck.com) | Community issue reporting only |
 
@@ -43,7 +43,7 @@ So we built RAMDeck to pool the memory we already owned across multiple devices 
 ## Known Limitations & Platform Support
 
 - **Reference Snapshot Status:** This codebase reflects a snapshot (v0.9) of the node-side daemon. It does not include the commercial coordinator, management interface, or packaging pipelines.
-- **Platform Support:** Official turnkey node installers for Mac, Windows, and Android are distributed exclusively through [ramdeck.com](https://ramdeck.com). This public repository is not packaged or supported as a standalone Windows installation. The diagnostic modules (`split_lifecycle.py` and `split_controller.py`) rely on POSIX process APIs (`os.killpg`, `os.getpgid`) and cannot be imported on Windows. Linux is not currently supported for the node agent.
+- **Platform Support:** Official turnkey node applications and installers for macOS, Windows, Linux, Android, and iOS (available on the [App Store](https://apps.apple.com/us/app/ramdeck-distributed-ai/id6825166226)) are distributed through [ramdeck.com](https://ramdeck.com) and official app channels. This public repository is a reference snapshot and is not packaged or distributed as a standalone desktop/mobile installer. The diagnostic modules (`split_lifecycle.py` and `split_controller.py`) rely on POSIX process APIs (`os.killpg`, `os.getpgid`) and cannot be imported on Windows.
 
 ---
 
